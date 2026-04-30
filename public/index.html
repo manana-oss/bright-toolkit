@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bright Studio — Sales Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#F6470F;--black:#18181A;--offwhite:#F0EEE7;--lilac:#C1C5E7;--brown:#9F4C2A;--sb:#111111}
+body,button,input,select,textarea{font-family:'Inter',sans-serif}
+body{background:var(--offwhite)}
+.portal{min-height:100vh;display:flex}
+.sb{width:220px;background:var(--sb);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sb-head{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.sb-sub{font-size:10px;font-weight:500;color:rgba(255,255,255,.3);letter-spacing:1.4px;text-transform:uppercase;margin-top:2px}
+.sb-sec{padding:20px 20px 5px;font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.24);text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 20px;width:100%;text-align:left;border:none;background:none;font-size:13px;color:rgba(255,255,255,.42);cursor:pointer;transition:all .15s;position:relative;font-family:'Inter',sans-serif}
+.sb-item:hover{color:rgba(255,255,255,.8)}
+.sb-item.on{color:#fff;background:rgba(246,71,15,.14)}
+.sb-item.on::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);border-radius:0 2px 2px 0}
+.sb-ic{font-size:13px;width:18px;text-align:center;flex-shrink:0;opacity:.6}
+.sb-item.on .sb-ic{opacity:1}
+.sb-n{margin-left:auto;font-size:11px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);padding:1px 8px;border-radius:20px}
+.sb-item.on .sb-n{background:rgba(246,71,15,.25);color:var(--red)}
+.sb-foot{margin-top:auto;padding:14px 20px;border-top:1px solid rgba(255,255,255,.06);font-size:10px;color:rgba(255,255,255,.2);font-style:italic}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;margin-left:220px}
+.topbar{height:46px;padding:0 32px;border-bottom:1px solid rgba(24,24,26,.1);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--offwhite);z-index:10}
+.tb-l{font-size:12px;color:rgba(24,24,26,.45)}
+.tb-r{font-size:11px;font-weight:600;color:var(--red)}
+.content{padding:32px;flex:1}
+.page{display:none}.page.on{display:block}
+
+/* INICIO */
+.hero{background:var(--black);border-radius:10px;padding:28px 32px;margin-bottom:20px;position:relative;overflow:hidden}
+.hero-accent{position:absolute;right:-20px;top:-20px;width:200px;height:200px;background:rgba(246,71,15,.05);border-radius:50%}
+.hero-tag{display:inline-block;background:rgba(246,71,15,.15);color:var(--red);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.hero-title{font-size:22px;font-weight:700;color:var(--offwhite);letter-spacing:-.4px;margin-bottom:5px}
+.hero-sub{font-size:12px;color:rgba(240,238,231,.38)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.card{background:#fff;border:1px solid rgba(24,24,26,.08);border-radius:10px;padding:16px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:left}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(24,24,26,.07)}
+.card-icon{width:32px;height:32px;background:rgba(246,71,15,.08);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:14px}
+.card-t{font-size:12px;font-weight:600;color:var(--black);margin-bottom:3px}
+.card-d{font-size:11px;color:var(--brown);line-height:1.4}
+.shortcuts{background:#fff;border:1px solid rgba(24,24,26,.08);border-radius:10px;padding:16px}
+.sh-label{font-size:9px;font-weight:700;color:rgba(24,24,26,.32);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.sh-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:6px 13px;border:1px solid rgba(24,24,26,.14);border-radius:20px;font-size:11px;color:var(--black);cursor:pointer;background:#fff;transition:all .15s;font-family:'Inter',sans-serif}
+.chip:hover{border-color:var(--red);background:rgba(246,71,15,.04)}
+
+/* GENERADOR */
+.gen-wrap{display:grid;grid-template-columns:1fr 300px;gap:20px}
+.gen-form{background:#fff;border:1px solid rgba(24,24,26,.08);border-radius:10px;padding:22px}
+.gen-title{font-size:14px;font-weight:700;color:var(--black);margin-bottom:3px}
+.gen-sub{font-size:11px;color:rgba(24,24,26,.4);margin-bottom:18px}
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.tab{padding:5px 13px;border:1px solid rgba(24,24,26,.15);border-radius:20px;font-size:11px;font-weight:500;background:none;cursor:pointer;color:rgba(24,24,26,.45);transition:all .15s;font-family:'Inter',sans-serif}
+.tab.on{background:var(--black);color:#fff;border-color:var(--black)}
+.fl{margin-bottom:13px}
+.fl label{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(24,24,26,.36);margin-bottom:5px}
+.fi{width:100%;padding:9px 12px;border:1px solid rgba(24,24,26,.14);border-radius:7px;font-size:12px;color:var(--black);background:#FAFAF8;outline:none;transition:border-color .15s;font-family:'Inter',sans-serif}
+.fi:focus{border-color:var(--red)}
+textarea.fi{min-height:76px;resize:vertical}
+.gen-btn{width:100%;padding:11px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;transition:opacity .15s;font-family:'Inter',sans-serif}
+.gen-btn:hover{opacity:.88}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed}
+.prev-wrap{background:var(--sb);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.prev-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.24)}
+.prev-doc{aspect-ratio:16/9;background:var(--black);border-radius:7px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:14px}
+.prev-wm{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:80px;font-weight:900;color:var(--red);opacity:.06;line-height:1}
+.prev-logo{position:absolute;top:11px;left:13px;font-size:10px;font-weight:700;color:rgba(240,238,231,.6)}
+.prev-date{position:absolute;top:11px;right:13px;font-size:9px;color:rgba(255,255,255,.22)}
+.prev-title{font-size:14px;font-weight:700;color:var(--offwhite);letter-spacing:-.3px;line-height:1.2;margin-bottom:3px;position:relative}
+.prev-sub{font-size:10px;color:var(--red);font-weight:600;position:relative}
+.fmt-row{display:flex;gap:6px}
+.fmt{padding:4px 10px;border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:10px;color:rgba(255,255,255,.32);cursor:pointer;background:none;font-family:'Inter',sans-serif}
+.fmt.on{border-color:var(--red);background:rgba(246,71,15,.15);color:var(--red);font-weight:600}
+.tpl-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:12px}
+.tpl-name{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px}
+.dl-btn{padding:11px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%;transition:opacity .15s;font-family:'Inter',sans-serif}
+.dl-btn:hover{opacity:.88}
+.status-msg{font-size:11px;text-align:center;padding:8px;border-radius:6px;margin-top:8px;display:none}
+.status-msg.ok{background:rgba(0,180,100,.1);color:#007a40;display:block}
+.status-msg.err{background:rgba(246,71,15,.1);color:var(--red);display:block}
+.texto-out{display:none;margin-top:14px;background:#F9F8F5;border:1px solid rgba(24,24,26,.1);border-radius:8px;padding:14px;font-size:12px;line-height:1.7;color:var(--black);white-space:pre-wrap;max-height:280px;overflow-y:auto}
+
+/* BRAND */
+.b-sec{margin-bottom:28px}
+.b-sec-title{font-size:9px;font-weight:700;color:rgba(24,24,26,.32);text-transform:uppercase;letter-spacing:1.8px;margin-bottom:12px}
+.color-row{display:flex;gap:10px;flex-wrap:wrap}
+.cs{border-radius:9px;overflow:hidden;border:1px solid rgba(24,24,26,.08);min-width:96px}
+.cs-color{height:60px}
+.cs-info{padding:8px 11px;background:#fff}
+.cs-name{font-size:11px;font-weight:600;color:var(--black)}
+.cs-hex{font-size:9px;color:rgba(24,24,26,.35);font-family:'Inter',monospace;margin-top:1px}
+.logos-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.lc{background:#fff;border:1px solid rgba(24,24,26,.08);border-radius:9px;overflow:hidden}
+.lc-prev{height:76px;display:flex;align-items:center;justify-content:center;padding:12px}
+.lc-name{padding:8px 11px;font-size:11px;font-weight:600;color:var(--black);border-top:1px solid rgba(24,24,26,.06)}
+.lc-sub{padding:0 11px 9px;font-size:10px;color:rgba(24,24,26,.38)}
+.typo-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tc{background:#fff;border:1px solid rgba(24,24,26,.08);border-radius:9px;padding:20px}
+.tc-big{font-size:28px;font-weight:700;color:var(--red);letter-spacing:-.8px;margin-bottom:12px;line-height:1.1}
+.tc-name{font-size:11px;font-weight:700;color:var(--black);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.tc-role{font-size:11px;color:rgba(24,24,26,.42);margin-bottom:6px}
+.tc-uses{font-size:11px;color:rgba(24,24,26,.45);line-height:1.5}
+.rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.rc{background:#fff;border:1px solid rgba(24,24,26,.08);border-radius:9px;padding:16px}
+.rc-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--red);margin-bottom:8px}
+.rc-item{display:flex;gap:7px;align-items:flex-start;font-size:11px;color:rgba(24,24,26,.58);margin-bottom:5px;line-height:1.4}
+.rc-dot{color:var(--red);font-size:10px;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+<div class="portal">
+<nav class="sb">
+  <div class="sb-head">
+    <div class="sb-name">Bright Studio</div>
+    <div class="sb-sub">Sales Toolkit · 2026</div>
+  </div>
+  <div class="sb-sec">Workspace</div>
+  <button class="sb-item on" onclick="go('inicio')"><span class="sb-ic">⌂</span>Inicio<span class="sb-n">—</span></button>
+  <button class="sb-item" onclick="go('generador')"><span class="sb-ic">▣</span>Generador de assets<span class="sb-n">4</span></button>
+  <div class="sb-sec">Marca</div>
+  <button class="sb-item" onclick="go('brand')"><span class="sb-ic">◉</span>Brand guidelines<span class="sb-n">5</span></button>
+  <div class="sb-foot">We light, you spark.</div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <span class="tb-l">Bright Studio — Sales Toolkit</span>
+    <span class="tb-r">We light, you spark.</span>
+  </div>
+  <div class="content">
+
+    <!-- INICIO -->
+    <div class="page on" id="pg-inicio">
+      <div class="hero">
+        <div class="hero-accent"></div>
+        <div class="hero-tag">Sales Toolkit 2026</div>
+        <div class="hero-title">Hola, equipo Bright.</div>
+        <div class="hero-sub">Genera presentaciones, documentos y assets de marca en segundos.</div>
+      </div>
+      <div class="cards">
+        <div class="card" onclick="go('generador');setTab('pptx')"><div class="card-icon">📊</div><div class="card-t">Nueva presentación</div><div class="card-d">Genera un .pptx con el template de Bright listo para editar.</div></div>
+        <div class="card" onclick="go('generador');setTab('docx')"><div class="card-icon">📄</div><div class="card-t">Informe o propuesta</div><div class="card-d">Documento Word con tu branding aplicado automáticamente.</div></div>
+        <div class="card" onclick="go('generador');setTab('asset')"><div class="card-icon">🎨</div><div class="card-t">Asset visual</div><div class="card-d">Banners, headers y portadas generados al momento.</div></div>
+        <div class="card" onclick="go('generador');setTab('texto')"><div class="card-icon">✍️</div><div class="card-t">Texto con IA</div><div class="card-d">Emails, propuestas y briefings con el tono de Bright.</div></div>
+        <div class="card" onclick="go('brand')"><div class="card-icon">◈</div><div class="card-t">Brand guidelines</div><div class="card-d">Colores, tipografías, logos y reglas de la marca.</div></div>
+        <div class="card" onclick="go('generador')"><div class="card-icon">⚡</div><div class="card-t">Acceso rápido</div><div class="card-d">Abre el generador y descarga tu asset en menos de 2 minutos.</div></div>
+      </div>
+      <div class="shortcuts">
+        <div class="sh-label">Accesos rápidos</div>
+        <div class="sh-chips">
+          <button class="chip" onclick="go('generador');setTab('texto')">→ Email de presentación</button>
+          <button class="chip" onclick="go('generador');setTab('texto')">→ Propuesta comercial</button>
+          <button class="chip" onclick="go('generador');setTab('pptx')">→ Nueva presentación</button>
+          <button class="chip" onclick="go('generador');setTab('asset')">→ Banner para LinkedIn</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GENERADOR -->
+    <div class="page" id="pg-generador">
+      <div class="gen-wrap">
+        <div class="gen-form">
+          <div class="gen-title">Generador de assets</div>
+          <div class="gen-sub">Elige el tipo de documento y rellena los datos.</div>
+          <div class="tabs">
+            <button class="tab on" id="tab-pptx" onclick="setTab('pptx')">📊 Presentación</button>
+            <button class="tab" id="tab-docx" onclick="setTab('docx')">📄 Informe</button>
+            <button class="tab" id="tab-asset" onclick="setTab('asset')">🎨 Asset visual</button>
+            <button class="tab" id="tab-texto" onclick="setTab('texto')">✍️ Texto IA</button>
+          </div>
+
+          <!-- PPTX FORM -->
+          <div id="form-pptx">
+            <div class="fl"><label>Nombre del servicio</label><input class="fi" id="nombre_servicio" placeholder="Ej. Branding + Identidad Visual" oninput="updPrev()"/></div>
+            <div class="fl"><label>Descripción del servicio</label><textarea class="fi" id="descripcion" placeholder="Describe brevemente el servicio ofertado..."></textarea></div>
+            <div class="fl"><label>¿Qué incluye?</label><textarea class="fi" id="incluye" placeholder="Descripción del acompañamiento o metodología..."></textarea></div>
+            <div class="fl"><label>Entregable 1</label><input class="fi" id="entregable_1" placeholder="Ej. Brand Discovery Document"/></div>
+            <div class="fl"><label>Entregable 2</label><input class="fi" id="entregable_2" placeholder="Ej. Logo principal + variantes"/></div>
+            <div class="fl"><label>Entregable 3</label><input class="fi" id="entregable_3" placeholder="Ej. Manual de marca completo"/></div>
+            <div class="fl"><label>Entregable 4 (opcional)</label><input class="fi" id="entregable_4" placeholder="Ej. Kit de assets digitales"/></div>
+            <div class="fl"><label>Entregable 5 (opcional)</label><input class="fi" id="entregable_5" placeholder="Ej. Archivos fuente en AI y PNG"/></div>
+            <div class="fl"><label>Nota de aclaración</label><input class="fi" id="nota_aclaracion" placeholder="Ej. CON ESTE PACK TENDRÁS UNA IDENTIDAD LISTA PARA..."/></div>
+            <div class="fl"><label>Plazo</label><input class="fi" id="plazo" placeholder="Ej. 8 semanas"/></div>
+            <div class="fl"><label>Precio</label><input class="fi" id="precio" placeholder="Ej. 3.800€"/></div>
+            <div class="fl"><label>Etapa 1 del timeline</label><input class="fi" id="timeline_1" placeholder="Ej. Discovery & Estrategia"/></div>
+            <div class="fl"><label>Etapa 2 del timeline</label><input class="fi" id="timeline_2" placeholder="Ej. Diseño & Iteración"/></div>
+            <div class="fl"><label>Etapa 3 del timeline</label><input class="fi" id="timeline_3" placeholder="Ej. Entrega & Activación"/></div>
+            <button class="gen-btn" id="gen-pptx-btn" onclick="generatePptx()">Generar presentación .pptx ↓</button>
+            <div class="status-msg" id="pptx-status"></div>
+          </div>
+
+          <!-- DOCX FORM -->
+          <div id="form-docx" style="display:none">
+            <div class="fl"><label>Tipo de documento</label><select class="fi"><option>Propuesta comercial</option><option>Informe de campaña</option><option>Briefing de proyecto</option><option>One-pager de servicio</option></select></div>
+            <div class="fl"><label>Cliente</label><input class="fi" placeholder="Nombre del cliente"/></div>
+            <div class="fl"><label>Servicio o proyecto</label><input class="fi" placeholder="Ej. Social Media Q2 2026"/></div>
+            <div class="fl"><label>Contexto adicional</label><textarea class="fi" placeholder="Información relevante..."></textarea></div>
+            <button class="gen-btn" onclick="alert('Próximamente disponible. Pídele a Gabi que suba el template de informe.')">Generar documento .docx ↓</button>
+          </div>
+
+          <!-- ASSET FORM -->
+          <div id="form-asset" style="display:none">
+            <div class="fl"><label>Tipo de asset</label><select class="fi"><option>Banner LinkedIn</option><option>Header de email</option><option>Portada de documento</option><option>Banner redes sociales</option><option>Story de Instagram</option></select></div>
+            <div class="fl"><label>Texto principal</label><input class="fi" placeholder="Ej. Nuevo servicio disponible"/></div>
+            <div class="fl"><label>Subtexto (opcional)</label><input class="fi" placeholder="Ej. Contacta con nosotros hoy"/></div>
+            <div class="fl"><label>Versión de color</label><select class="fi"><option>Fondo negro + texto Off White</option><option>Fondo Off White + texto negro</option><option>Fondo rojo + texto Off White</option><option>Fondo lila + texto negro</option></select></div>
+            <button class="gen-btn" onclick="alert('Próximamente disponible. Los assets visuales se generarán aquí.')">Generar asset visual ↓</button>
+          </div>
+
+          <!-- TEXTO FORM -->
+          <div id="form-texto" style="display:none">
+            <div class="fl"><label>Tipo de texto</label><select class="fi" id="t-type"><option>Email de presentación</option><option>Propuesta comercial</option><option>Briefing interno</option><option>Post de LinkedIn</option><option>Descripción de servicio</option></select></div>
+            <div class="fl"><label>Cliente o destinatario</label><input class="fi" id="t-client" placeholder="Ej. Directora de marketing"/></div>
+            <div class="fl"><label>Tono</label><select class="fi" id="t-tone"><option>Profesional y cercano</option><option>Formal</option><option>Creativo y directo</option></select></div>
+            <div class="fl"><label>Detalles clave</label><textarea class="fi" id="t-context" placeholder="Contexto relevante..."></textarea></div>
+            <button class="gen-btn" id="gen-texto-btn" onclick="genTexto()">Generar con IA ✦</button>
+            <div class="texto-out" id="texto-out"></div>
+          </div>
+        </div>
+
+        <div class="prev-wrap">
+          <div class="prev-label">Vista previa</div>
+          <div class="prev-doc">
+            <div class="prev-wm">B</div>
+            <div class="prev-logo">Bright Studio</div>
+            <div class="prev-date">Mayo 2026</div>
+            <div class="prev-title" id="prev-title">Propuesta de servicio</div>
+            <div class="prev-sub" id="prev-sub">Bright Studio · 2026</div>
+          </div>
+          <div>
+            <div class="prev-label">Formato</div>
+            <div class="fmt-row">
+              <button class="fmt on" id="fmt-pptx">.pptx</button>
+              <button class="fmt" id="fmt-docx">.docx</button>
+              <button class="fmt" id="fmt-pdf">.pdf</button>
+              <button class="fmt" id="fmt-png">.png</button>
+            </div>
+          </div>
+          <div class="tpl-box">
+            <div class="prev-label">Template conectado</div>
+            <div class="tpl-name" id="tpl-name">Bright Deck · diseño de Gabi · 9 slides</div>
+          </div>
+          <button class="dl-btn" id="dl-btn" style="display:none" onclick="downloadFile()">Descargar archivo ↓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND GUIDELINES -->
+    <div class="page" id="pg-brand">
+      <div class="b-sec">
+        <div class="b-sec-title">Paleta de color</div>
+        <div class="color-row">
+          <div class="cs"><div class="cs-color" style="background:#F6470F"></div><div class="cs-info"><div class="cs-name">Bright Red</div><div class="cs-hex">#F6470F · Marca · Acento</div></div></div>
+          <div class="cs"><div class="cs-color" style="background:#18181A"></div><div class="cs-info"><div class="cs-name">Bright Black</div><div class="cs-hex">#18181A · Texto · Fondo</div></div></div>
+          <div class="cs"><div class="cs-color" style="background:#F0EEE7;border-bottom:1px solid rgba(24,24,26,.07)"></div><div class="cs-info"><div class="cs-name">Off White</div><div class="cs-hex">#F0EEE7 · Fondo claro</div></div></div>
+          <div class="cs"><div class="cs-color" style="background:#C1C5E7"></div><div class="cs-info"><div class="cs-name">Bright Lilac</div><div class="cs-hex">#C1C5E7 · Secundario</div></div></div>
+          <div class="cs"><div class="cs-color" style="background:#9F4C2A"></div><div class="cs-info"><div class="cs-name">Bright Brown</div><div class="cs-hex">#9F4C2A · Secundario</div></div></div>
+        </div>
+      </div>
+      <div class="b-sec">
+        <div class="b-sec-title">Logos</div>
+        <div class="logos-row">
+          <div class="lc"><div class="lc-prev" style="background:#18181A"><svg width="90" height="28" viewBox="0 0 90 28"><polygon points="0,2 11,2 5.5,13" fill="#F6470F"/><text x="16" y="20" fill="#F0EEE7" font-size="17" font-family="Inter,sans-serif" font-weight="700" letter-spacing="-0.4">Bright</text></svg></div><div class="lc-name">Logo blanco</div><div class="lc-sub">Sobre fondo oscuro</div></div>
+          <div class="lc"><div class="lc-prev" style="background:#F0EEE7"><svg width="90" height="28" viewBox="0 0 90 28"><polygon points="0,2 11,2 5.5,13" fill="#F6470F"/><text x="16" y="20" fill="#18181A" font-size="17" font-family="Inter,sans-serif" font-weight="700" letter-spacing="-0.4">Bright</text></svg></div><div class="lc-name">Logo negro</div><div class="lc-sub">Sobre fondo claro</div></div>
+          <div class="lc"><div class="lc-prev" style="background:#F6470F"><svg width="40" height="40" viewBox="0 0 40 40"><polygon points="20,4 24,16 36,16 27,24 30,36 20,29 10,36 13,24 4,16 16,16" fill="rgba(240,238,231,.85)"/></svg></div><div class="lc-name">Isotipo rojo</div><div class="lc-sub">Uso secundario</div></div>
+          <div class="lc"><div class="lc-prev" style="background:#C1C5E7"><svg width="40" height="40" viewBox="0 0 40 40"><polygon points="20,4 24,16 36,16 27,24 30,36 20,29 10,36 13,24 4,16 16,16" fill="rgba(24,24,26,.65)"/></svg></div><div class="lc-name">Isotipo lila</div><div class="lc-sub">Uso alternativo</div></div>
+        </div>
+      </div>
+      <div class="b-sec">
+        <div class="b-sec-title">Tipografía</div>
+        <div class="typo-row">
+          <div class="tc"><div class="tc-big">PP Agrandir</div><div class="tc-name">PP Agrandir</div><div class="tc-role">Titulares y portadas</div><div class="tc-uses">Exclusivo para headlines, títulos de slides y portadas. Nunca en cuerpo de texto.</div></div>
+          <div class="tc"><div class="tc-big" style="font-weight:400;font-size:24px;letter-spacing:-.3px">Inter</div><div class="tc-name">Inter</div><div class="tc-role">Cuerpo y UI</div><div class="tc-uses">Todo el contenido, subtítulos, etiquetas y documentos. Pesos: 400 y 600.</div></div>
+        </div>
+      </div>
+      <div class="b-sec">
+        <div class="b-sec-title">Reglas de uso</div>
+        <div class="rules-grid">
+          <div class="rc"><div class="rc-label">Color</div><div class="rc-item"><span class="rc-dot">✓</span>Nunca combinar lila + rojo en la misma pieza</div><div class="rc-item"><span class="rc-dot">✓</span>Off White en vez de blanco puro</div><div class="rc-item"><span class="rc-dot">✓</span>Máximo 3 colores por slide o pieza</div></div>
+          <div class="rc"><div class="rc-label">Presentaciones</div><div class="rc-item"><span class="rc-dot">✓</span>Portada: fondo negro + PP Agrandir</div><div class="rc-item"><span class="rc-dot">✓</span>Contenido: fondo Off White + acento rojo</div><div class="rc-item"><span class="rc-dot">✓</span>Cierre: "We light, you spark."</div></div>
+          <div class="rc"><div class="rc-label">Logo</div><div class="rc-item"><span class="rc-dot">✓</span>Blanco sobre negro o rojo</div><div class="rc-item"><span class="rc-dot">✓</span>Negro sobre Off White o fondo claro</div><div class="rc-item"><span class="rc-dot">✓</span>No deformar ni rotar el isotipo</div></div>
+          <div class="rc"><div class="rc-label">Tipografía</div><div class="rc-item"><span class="rc-dot">✓</span>PP Agrandir solo en títulos grandes</div><div class="rc-item"><span class="rc-dot">✓</span>Inter en todo lo demás</div><div class="rc-item"><span class="rc-dot">✓</span>Máximo 2 pesos por pieza</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const SYS = `Eres el asistente de marca de Bright Studio. Tono: directo, cálido, profesional. Tagline: "We light, you spark." Responde en español. Sin relleno, con personalidad.`;
+let generatedFile = null;
+let generatedFilename = null;
+
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('on'));
+  document.getElementById('pg-' + id).classList.add('on');
+  const map = {inicio:'⌂', generador:'▣', brand:'◉'};
+  document.querySelectorAll('.sb-item').forEach(b => {
+    if (b.querySelector('.sb-ic')?.textContent === map[id]) b.classList.add('on');
+  });
+}
+
+function setTab(t) {
+  ['pptx','docx','asset','texto'].forEach(x => {
+    document.getElementById('tab-' + x).classList.toggle('on', x === t);
+    document.getElementById('form-' + x).style.display = x === t ? 'block' : 'none';
+  });
+  const infos = {pptx:'Bright Deck · diseño de Gabi · 9 slides', docx:'Bright Report Template · diseño de Gabi', asset:'Bright Visual Kit · banners y headers', texto:'Generación con IA · tono Bright'};
+  document.getElementById('tpl-name').textContent = infos[t];
+  const fmts = {pptx:['pptx'], docx:['docx','pdf'], asset:['png','pdf'], texto:['txt','docx']};
+  document.querySelectorAll('.fmt').forEach(f => {
+    f.classList.toggle('on', (fmts[t]||[]).includes(f.textContent.replace('.','')));
+  });
+  generatedFile = null;
+  document.getElementById('dl-btn').style.display = 'none';
+}
+
+function updPrev() {
+  const s = document.getElementById('nombre_servicio')?.value || 'Propuesta de servicio';
+  document.getElementById('prev-title').textContent = s || 'Propuesta de servicio';
+}
+
+function showStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'status-msg ' + type;
+}
+
+async function generatePptx() {
+  const btn = document.getElementById('gen-pptx-btn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '⟳ Generando presentación...';
+  btn.disabled = true;
+  showStatus('pptx-status', '', '');
+
+  const data = {
+    nombre_servicio: document.getElementById('nombre_servicio').value,
+    descripcion:     document.getElementById('descripcion').value,
+    incluye:         document.getElementById('incluye').value,
+    entregable_1:    document.getElementById('entregable_1').value,
+    entregable_2:    document.getElementById('entregable_2').value,
+    entregable_3:    document.getElementById('entregable_3').value,
+    entregable_4:    document.getElementById('entregable_4').value,
+    entregable_5:    document.getElementById('entregable_5').value,
+    nota_aclaracion: document.getElementById('nota_aclaracion').value,
+    plazo:           document.getElementById('plazo').value,
+    precio:          document.getElementById('precio').value,
+    timeline_1:      document.getElementById('timeline_1').value,
+    timeline_2:      document.getElementById('timeline_2').value,
+    timeline_3:      document.getElementById('timeline_3').value,
+  };
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (result.file) {
+      generatedFile = result.file;
+      generatedFilename = result.filename;
+      document.getElementById('dl-btn').style.display = 'block';
+      showStatus('pptx-status', '✓ Presentación lista — pulsa Descargar', 'ok');
+    } else {
+      showStatus('pptx-status', 'Error: ' + (result.error || 'inténtalo de nuevo'), 'err');
+    }
+  } catch(e) {
+    showStatus('pptx-status', 'Error de conexión con el servidor', 'err');
+  }
+  btn.innerHTML = orig;
+  btn.disabled = false;
+}
+
+function downloadFile() {
+  if (!generatedFile) return;
+  const bytes = atob(generatedFile);
+  const arr = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+  const blob = new Blob([arr], {type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = generatedFilename || 'Bright_Propuesta.pptx';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function genTexto() {
+  const ttype = document.getElementById('t-type')?.value || '';
+  const client = document.getElementById('t-client')?.value || 'un cliente';
+  const tone = document.getElementById('t-tone')?.value || '';
+  const ctx = document.getElementById('t-context')?.value || '';
+  const prompt = `Redacta un/a "${ttype}" para ${client}. Tono: ${tone}.${ctx ? ' Contexto: ' + ctx : ''}`;
+  const btn = document.getElementById('gen-texto-btn');
+  btn.innerHTML = '⟳ Generando...'; btn.disabled = true;
+  const out = document.getElementById('texto-out');
+  out.style.display = 'block'; out.textContent = '...';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:800, system:SYS, messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    out.textContent = data.content?.[0]?.text || 'Error. Inténtalo de nuevo.';
+  } catch(e) { out.textContent = 'Error de conexión.'; }
+  btn.innerHTML = 'Generar con IA ✦'; btn.disabled = false;
+}
+</script>
+</body>
+</html>

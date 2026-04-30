@@ -296,7 +296,7 @@ textarea.fi{min-height:76px;resize:vertical}
 
 <script>
 const SYS = `Eres el asistente de marca de Bright Studio. Tono: directo, cálido, profesional. Tagline: "We light, you spark." Responde en español. Sin relleno, con personalidad.`;
-let generatedFile = null;
+let generatedBlob = null;
 let generatedFilename = null;
 
 function go(id) {
@@ -320,7 +320,7 @@ function setTab(t) {
   document.querySelectorAll('.fmt').forEach(f => {
     f.classList.toggle('on', (fmts[t]||[]).includes(f.textContent.replace('.','')));
   });
-  generatedFile = null;
+  generatedBlob = null;
   document.getElementById('dl-btn').style.display = 'none';
 }
 
@@ -341,7 +341,6 @@ async function generatePptx() {
   btn.innerHTML = '⟳ Generando presentación...';
   btn.disabled = true;
   showStatus('pptx-status', '', '');
-
   const data = {
     nombre_servicio: document.getElementById('nombre_servicio').value,
     descripcion:     document.getElementById('descripcion').value,
@@ -358,21 +357,23 @@ async function generatePptx() {
     timeline_2:      document.getElementById('timeline_2').value,
     timeline_3:      document.getElementById('timeline_3').value,
   };
-
   try {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
     });
-    const result = await res.json();
-    if (result.file) {
-      generatedFile = result.file;
-      generatedFilename = result.filename;
-      document.getElementById('dl-btn').style.display = 'block';
-      showStatus('pptx-status', '✓ Presentación lista — pulsa Descargar', 'ok');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({error: 'Error desconocido'}));
+      showStatus('pptx-status', 'Error: ' + (err.error || res.statusText), 'err');
     } else {
-      showStatus('pptx-status', 'Error: ' + (result.error || 'inténtalo de nuevo'), 'err');
+      const blob = await res.blob();
+      const cd = res.headers.get('Content-Disposition') || '';
+      const match = cd.match(/filename="(.+)"/);
+      generatedFilename = match ? match[1] : 'Bright_Propuesta.pptx';
+      generatedBlob = blob;
+      document.getElementById('dl-btn').style.display = 'block';
+      showStatus('pptx-status', '\u2713 Presentación lista — pulsa Descargar', 'ok');
     }
   } catch(e) {
     showStatus('pptx-status', 'Error de conexión con el servidor', 'err');
@@ -382,12 +383,8 @@ async function generatePptx() {
 }
 
 function downloadFile() {
-  if (!generatedFile) return;
-  const bytes = atob(generatedFile);
-  const arr = new Uint8Array(bytes.length);
-  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-  const blob = new Blob([arr], {type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
-  const url = URL.createObjectURL(blob);
+  if (!generatedBlob) return;
+  const url = URL.createObjectURL(generatedBlob);
   const a = document.createElement('a');
   a.href = url; a.download = generatedFilename || 'Bright_Propuesta.pptx';
   a.click();
